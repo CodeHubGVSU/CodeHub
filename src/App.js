@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import './App.css'
-import './components/login.css'
 import { Button } from "react-bootstrap"
 import firebase from 'firebase'
+import MainScreen from './components/MainScreen'
 import database from './firebase.js'
 
 class App extends Component {
@@ -19,7 +19,7 @@ class App extends Component {
           {this.state.authenticated ? <Button onClick={() => this.logout()}>Logout</Button> : <Button onClick={() => this.validateForm()}>Login</Button>}
         </div>
         <div className="Main">
-          {/* <MainScreen props/> */}
+          {this.state.authenticated ? <MainScreen /> : <p>login screen</p>}
         </div>
       </div>
     );

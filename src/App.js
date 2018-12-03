@@ -1,22 +1,52 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import './components/login.css';
-import Login from './components/login.js';
+import React, { Component } from 'react'
+import './App.css'
+import { Button } from "react-bootstrap"
+
+import firebase from 'firebase'
 import database from './firebase.js'
 
+import MainScreen from './components/MainScreen'
+
 class App extends Component {
+
+  state = {
+    authenticated: false,
+    user: null
+  }
+
   render() {
     return (
       <div className="App">
-        <Login 
-        database = {database}
-        provider = {new database.auth.GoogleAuthProvider()}
-        />
+        <div className="Login">
+          {this.state.authenticated ? <Button onClick={() => this.logout()}>Logout</Button> : <Button onClick={() => this.validateForm()}>Login</Button>}
+        </div>
+        <div className="Main">
+          {this.state.authenticated ? <MainScreen database={database} user={this.state.user}/> : <p>login screen</p>}
+        </div>
       </div>
     );
   }
-  
+
+  logout() {
+    database.auth().signOut()
+    .then(() => {
+      this.setState({
+        authenticated: false,
+        user: null
+      })
+    })
+  }
+
+  validateForm() {
+    var provider = new firebase.auth.GoogleAuthProvider()
+    database.auth().signInWithPopup(provider)
+    .then((result) => {
+        this.setState({
+            user: result.user,
+            authenticated: true
+        })
+    })
+  }
 }
 
 export default App;

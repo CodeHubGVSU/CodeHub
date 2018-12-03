@@ -6,7 +6,6 @@ import firebase from 'firebase'
 import database from './firebase.js'
 
 import MainScreen from './components/MainScreen'
-import NewPost from './components/NewPost'
 
 class App extends Component {
 
@@ -23,9 +22,6 @@ class App extends Component {
         </div>
         <div className="Main">
           {this.state.authenticated ? <MainScreen database={database} user={this.state.user}/> : <p>login screen</p>}
-        </div>
-        <div className="NewPost">
-          {<NewPost database={database} user={this.state.user}/>}
         </div>
       </div>
     );

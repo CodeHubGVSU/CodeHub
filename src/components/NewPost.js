@@ -12,7 +12,7 @@ class NewPost extends Component {
     render() {
         return (
             <div>
-                <Popup trigger={<button> New Post</button>} 
+                <Popup trigger={this.props.popup} 
                     modal
                     closeOnDocumentClick
                 >

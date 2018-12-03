@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ForumsTable from "./ForumsTable"
 
 export default class MainScreen extends Component {
     
@@ -9,8 +10,10 @@ export default class MainScreen extends Component {
 
     render() {
         return (
-            <div className="Login">
-                <p>This is a test for this main page Component</p>
+            <div className="Main">
+                <div className="NewPost">
+                    <ForumsTable database={this.props.database} user={this.props.user}/>
+                </div>
             </div>
         );
     }

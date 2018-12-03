@@ -19,7 +19,7 @@ class App extends Component {
           {this.state.authenticated ? <Button onClick={() => this.logout()}>Logout</Button> : <Button onClick={() => this.validateForm()}>Login</Button>}
         </div>
         <div className="Main">
-          {this.state.authenticated ? <MainScreen /> : <p>login screen</p>}
+          {this.state.authenticated ? <MainScreen database={database}/> : <p>login screen</p>}
         </div>
       </div>
     );

@@ -79,7 +79,7 @@ class ForumsTable extends Component {
                     </Popup>
                 </div>
                 <div className="Questions">
-                    <QuestionsList database={this.props.database}/>
+                    <QuestionsList database={this.props.database} user={this.props.user}/>
                 </div>
             </div>
         );

@@ -25,7 +25,8 @@ class QuestionsList extends Component {
     
     state = {
         questions: [],
-        comment: ""
+        comment: "",
+        comments: null
     }
 
     
@@ -61,30 +62,30 @@ class QuestionsList extends Component {
                             >
                             {close => (
                                 <div id="inputs" className="modal">
-                                    <div className={classes.InputHeader}> New Question </div>
-                                        <TextField
-                                            id="comment"
-                                            label="Comment"
-                                            multiline
-                                            rowsMax="10"
-                                            disabled
-                                            value={this.state.comment}
-                                            onChange={this.handleChange('comment')}
-                                            className={classes.TextField}
-                                            margin="dense"
-                                            fullWidth
-                                        />
+                                    <div className={classes.InputHeader}>{element.val().title}</div>
+                                    <div>{this.getComments(element)}</div>
+                                    
+                                    <TextField
+                                        id="comment"
+                                        label="Comment"
+                                        multiline
+                                        rowsMax="10"
+                                        disabled
+                                        value={this.state.comment}
+                                        onChange={this.handleChange('comment')}
+                                        className={classes.TextField}
+                                        margin="dense"
+                                        fullWidth
+                                    />
                                     <div className="actions">
-                                    
-                                    
-                                    <Button
-                                        className="commentButton"
-                                        onClick={() => {
-                                            close()
-                                        }}
-                                    >
-                                        Submit comment
-                                    </Button>
+                                        <Button
+                                            className="commentButton"
+                                            onClick={() => {
+                                                this.addComment(element.key)
+                                            }}
+                                        >
+                                            Submit comment
+                                        </Button>
                                     </div>
                                 </div>
                                 )}
@@ -130,6 +131,46 @@ class QuestionsList extends Component {
     deleteQuestion(key) {
         const Ref = this.props.database.database().ref('questions')
         Ref.child(key).remove()
+    }
+
+    addComment(key) {
+        var comments = this.props.database.database().ref().child("comments")
+        comments.push().set({
+            comment: this.state.comment,
+            uid: this.props.user.uid,
+            key: key
+        });
+    } 
+
+    getComments(element) {
+        
+        const Ref = this.props.database.database().ref('comments')
+        var comments = []
+        Ref.orderByChild("key").on("child_added", snapshot => {
+            console.log(snapshot.val())
+            console.log(element.key)            
+            console.log("1")
+            if(snapshot.val().key === element.key)
+                comments.unshift(<div key={snapshot.key}>
+                                    <Typography className="comment" color="textPrimary">
+                                        {snapshot.val().comment}
+                                    </Typography>
+                                 </div>
+                                )
+        })
+        console.log("2")
+
+        // let commentList = comments.map((comment) => {
+        //     return (
+        //         <div key={comment.key}>
+        //             <Typography className="comment" color="textPrimary">
+        //                 {comment.val().comment}
+        //             </Typography>
+        //         </div>
+        //     )
+        // })
+        
+        return <ul id="listOfCards">{comments}</ul>
     }
 
 }

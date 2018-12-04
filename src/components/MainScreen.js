@@ -1,12 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import ForumsTable from "./ForumsTable"
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import UserInfo from "./UserInfo"
+import { withStyles } from '@material-ui/core/styles'
+import Grid from '@material-ui/core/Grid'
 
 const styles = {
-    // Main: {
-    //     display: 'flex'
-    // }
 }
 
 class MainScreen extends Component {
@@ -19,13 +17,11 @@ class MainScreen extends Component {
     render() {
         const { classes } = this.props
         return (
-            <div container className={classes.Main} >
+            <div className={classes.Main} >
                 <Grid container >
                     <Grid item md={2}>
                         <div className={classes.LeftSideBar}>
-                            {/* <UserInfo /> */}
-                            {/* this will be where the left side bar stuff will be like user info */}
-                            <p>User info will go here</p>
+                            <UserInfo database={this.props.database} user={this.props.user}/>
                         </div>
                     </Grid>
                     <Grid item md={8}>

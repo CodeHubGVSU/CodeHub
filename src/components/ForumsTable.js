@@ -4,7 +4,6 @@ import QuestionsList from './QuestionsList'
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { runInThisContext } from "vm";
 
 const styles = {
     NewPost: {
@@ -48,7 +47,7 @@ class ForumsTable extends Component {
                                     onChange={this.handleChange('title')}
                                     className={classes.TextField}
                                     margin="normal"
-                                    fullWidth = "true"
+                                    fullWidth
                                 /><br/>
                                 <TextField
                                     id="question"
@@ -59,7 +58,7 @@ class ForumsTable extends Component {
                                     onChange={this.handleChange('question')}
                                     className={classes.TextField}
                                     margin="dense"
-                                    fullWidth = "true"
+                                    fullWidth
                                 />
                             <div className="actions">
                             

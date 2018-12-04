@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Popup from "reactjs-popup";
+import QuestionsList from './QuestionsList'
 
 export default class ForumsTable extends Component {
     
@@ -35,6 +36,9 @@ export default class ForumsTable extends Component {
                         </div>
                         )}
                     </Popup>
+                </div>
+                <div className="Questions">
+                    <QuestionsList database={this.props.database}/>
                 </div>
             </div>
         );

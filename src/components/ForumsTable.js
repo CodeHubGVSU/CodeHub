@@ -86,13 +86,13 @@ class ForumsTable extends Component {
     }
 
     newPost() {
-        var questions = this.props.database.database().ref().child("questions");
+        var questions = this.props.database.database().ref().child("questions")
         questions.push().set({ 
             title: this.state.title,
             question: this.state.question,
             uid: this.props.user.uid
         });
-    }
+    }    
 
 }
 

@@ -36,7 +36,7 @@ class QuestionsList extends Component {
                     <Card className={classes.card}>
                         <CardHeader action={
                                 <IconButton>
-                                    <DeleteIcon />
+                                    <DeleteIcon onClick={() => this.deleteQuestion(element.key)}/>
                                 </IconButton>
                             }
                             title={element.val().title}
@@ -84,7 +84,13 @@ class QuestionsList extends Component {
             })
         })
 
-    }   
+    }
+
+    deleteQuestion(key) {
+        const Ref = this.props.database.database().ref('questions')
+        Ref.child(key).remove()
+    }
+
 }
 
 export default withStyles(styles)(QuestionsList)

@@ -1,37 +1,79 @@
 import React, { Component } from "react";
 import Popup from "reactjs-popup";
 import QuestionsList from './QuestionsList'
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import { runInThisContext } from "vm";
 
-export default class ForumsTable extends Component {
+const styles = {
+    NewPost: {
+        textAlign: 'center'
+    },
+    InputHeader: {
+        fontSize: 40
+    }
+}
+class ForumsTable extends Component {
     
     state = {
+        title: "",
+        question:""
     }
 
+    handleChange = name => event => {
+        this.setState({
+          [name]: event.target.value,
+        });
+      };
+
     render() {
+        const { classes } = this.props
         return (
             <div className="Forums">
-                <div className="NewPost">
-                    <Popup trigger={<button className="button"> New question </button>} 
+                <div className={classes.NewPost}><br/>
+                    <Popup trigger={<Button variant="outlined" className="button">Ask a question!</Button>} 
                         modal
                         closeOnDocumentClick
                     >
                     {close => (
                         <div id="inputs" className="modal">
-                            <div className="header"> New Post </div>
-                                <input id="title" type="text" name="title" placeholder="Enter title..."></input><br/>
-                                <input id="question" type="text" name="question" placeholder="Enter question..."></input><br/>
+                            <div className={classes.InputHeader}> New Question </div>
+                                <TextField
+                                    id="title"
+                                    label="Title"
+                                    multiline
+                                    rowsMax="2"
+                                    value={this.state.title}
+                                    onChange={this.handleChange('title')}
+                                    className={classes.TextField}
+                                    margin="normal"
+                                    fullWidth = "true"
+                                /><br/>
+                                <TextField
+                                    id="question"
+                                    label="Question"
+                                    multiline
+                                    rowsMax="10"
+                                    value={this.state.question}
+                                    onChange={this.handleChange('question')}
+                                    className={classes.TextField}
+                                    margin="dense"
+                                    fullWidth = "true"
+                                />
                             <div className="actions">
                             
                             
-                            <button
+                            <Button
                                 className="button"
                                 onClick={() => {
                                     this.newPost()
                                     close()
                                 }}
+                                variant="outlined"
                             >
-                                Submit new post
-                            </button>
+                                Submit question
+                            </Button>
                             </div>
                         </div>
                         )}
@@ -45,18 +87,14 @@ export default class ForumsTable extends Component {
     }
 
     newPost() {
-        var div = document.getElementById("inputs")
-        var inputs = div.children
-
-        var title = inputs[1].value
-        var question = inputs[3].value
-
         var questions = this.props.database.database().ref().child("questions");
         questions.push().set({ 
-            title: title,
-            question: question,
+            title: this.state.title,
+            question: this.state.question,
             uid: this.props.user.uid
         });
     }
 
 }
+
+export default withStyles(styles)(ForumsTable)

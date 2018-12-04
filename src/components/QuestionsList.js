@@ -1,65 +1,90 @@
-import React, { Component } from "react";
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
+import CardHeader from '@material-ui/core/CardHeader';
 
 
-export default class QuestionsList extends Component {
+
+
+const styles ={
+    card: {
+
+    },
+    title: {
+
+    }
+}
+
+class QuestionsList extends Component {
     
-//this is where you will create the list of questions using DOM like in the friends project
-//by setting up things like questions.on("child_removed", snapshot => { //do stuff with snapshot})
-    render() {
-        return (
-            <div className="Main">
-                <p>Questions list</p>
-            </div>
-        );
+    state = {
+        questions: []
     }
 
-    // function maketable(snapshot) {
-    //     let table = document.getElementById("Main")
-    //     var row = table.insertRow(1)
-    //     row.setAttribute("id", snapshot.key)
-    //     var name = row.insertCell(0)
-    //     var phone = row.insertCell(1)
-    //     var age = row.insertCell(2)
-    //     var action = row.insertCell(3)
-    //     name.innerHTML = snapshot.val().name
-    //     phoneValue = formatPhoneNumber(snapshot.val().phone)
-    //     phone.innerHTML = phoneValue
-    //     age.innerHTML = snapshot.val().age
-    //     action.innerHTML = "<button id='" + snapshot.key + "' onclick='getrid(this.id)'>Remove</button>"
-    // }
 
+    render() {
+        const classes = this.props
+        let elements = this.state.questions.map((element) => {
+            return (
+                <div  className={classes.cardDiv} key={element.key}>
+                    <Card className={classes.card}>
+                        <CardHeader action={
+                                <IconButton>
+                                    <DeleteIcon />
+                                </IconButton>
+                            }
+                            title={element.val().title}
+                        />
+                        <CardContent>
+                            <Typography className={classes.question} color="textPrimary">
+                                {element.val().question}
+                            </Typography>
+                        </CardContent>
+                        <CardActions>
+                            <Button size="small">Comments</Button>
+                        </CardActions>
+                    </Card>
+                    <br/>
+                </div>
+            )
+        })
+        return <ul id="listOfCards">{elements}</ul>
+    }
 
-
-    componentDidMount() {
+    componentWillMount() {
         const Ref = this.props.database.database().ref('questions')
 
         Ref.on("child_added", snapshot => {
-            console.log(snapshot.val())
+            
+            var tempQuestions = this.state.questions
+            tempQuestions.unshift(snapshot)
+
+            this.setState({
+                questions: tempQuestions
+            })
         })
 
-    }
+        Ref.on("child_removed", snapshot => {
+            
+            var tempQuestions = this.state.questions
+            var index = tempQuestions.map(function(question) { return question.key; }).indexOf(snapshot.key);
 
-    PaperSheet() {
-        //const { classes } = props;
-        var Ref = this.props.database.database().ref().child("questions")
+            if (index > -1) {
+                tempQuestions.splice(index, 1);
+            }
 
+            this.setState({
+                questions: tempQuestions
+            })
+        })
 
-
-        return (
-            <div>
-                <Paper className="POST1" elevation={1}>
-                    <Typography variant="h5" component="h3">
-                        {Ref.title}
-                    </Typography>
-                    <Typography component="p">
-                        {Ref.questions}
-                    </Typography>
-                </Paper>
-            </div>
-        );
-    }
+    }   
 }
+
+export default withStyles(styles)(QuestionsList)

@@ -8,8 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
 import CardHeader from '@material-ui/core/CardHeader';
-
-
+import TextField from '@material-ui/core/TextField';
+import Popup from "reactjs-popup";
 
 
 const styles ={
@@ -24,8 +24,16 @@ const styles ={
 class QuestionsList extends Component {
     
     state = {
-        questions: []
+        questions: [],
+        comment: ""
     }
+
+    
+    handleChange = name => event => {
+        this.setState({
+          [name]: event.target.value,
+        });
+      };
 
 
     render() {
@@ -47,7 +55,40 @@ class QuestionsList extends Component {
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">Comments</Button>
+                            <Popup trigger={<Button size="small" className={classes.commentsButton}>Comment</Button>} 
+                                modal
+                                closeOnDocumentClick
+                            >
+                            {close => (
+                                <div id="inputs" className="modal">
+                                    <div className={classes.InputHeader}> New Question </div>
+                                        <TextField
+                                            id="comment"
+                                            label="Comment"
+                                            multiline
+                                            rowsMax="10"
+                                            disabled
+                                            value={this.state.comment}
+                                            onChange={this.handleChange('comment')}
+                                            className={classes.TextField}
+                                            margin="dense"
+                                            fullWidth
+                                        />
+                                    <div className="actions">
+                                    
+                                    
+                                    <Button
+                                        className="commentButton"
+                                        onClick={() => {
+                                            close()
+                                        }}
+                                    >
+                                        Submit comment
+                                    </Button>
+                                    </div>
+                                </div>
+                                )}
+                            </Popup>
                         </CardActions>
                     </Card>
                     <br/>

@@ -45,7 +45,7 @@ class QuestionsList extends Component {
                     <Card className={classes.card}>
                         <CardHeader action={
                                 <IconButton>
-                                    <DeleteIcon onClick={() => this.deleteQuestion(element)}/>
+                                    <DeleteIcon id="deleteQuestion" onClick={() => this.deleteQuestion(element)}/>
                                 </IconButton>
                             }
                             title={element.val().title}
@@ -164,8 +164,10 @@ class QuestionsList extends Component {
     }
 
     deleteComment(element) {
+        console.log("here")
         if( this.props.user.uid === element.val().uid)
-        {
+        {   
+            console.log("here1")
             const Ref = this.props.database.database().ref('comments')
             Ref.child(element.key).remove()
         }
@@ -193,7 +195,7 @@ class QuestionsList extends Component {
                 <div key={comment.key}>
                     <Typography className="comment" color="textPrimary">
                         <IconButton>
-                            <DeleteIcon onClick={() => this.deleteComment(comment)}/>
+                            <DeleteIcon id="deleteComment" onClick={() => this.deleteComment(comment)}/>
                         </IconButton>
                         {comment.val().comment}
                     </Typography>

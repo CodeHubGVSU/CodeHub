@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import ForumsTable from "./ForumsTable"
 import UserInfo from "./UserInfo"
+import OnlineUsers from "./OnlineUsers"
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 
@@ -31,9 +32,8 @@ class MainScreen extends Component {
                     </Grid>
                     <Grid item md={2}>
                         <div className={classes.RightSideBar}>
-                            {/* <ForumInfo /> */}
-                            {/* this will be where the right side bar stuff will be, like the popular users (if we do that) or info about the forum */}
-                            <p>Forum info will go here</p>
+                            <h1>Online Users:</h1>
+                            <OnlineUsers database={this.props.database} user={this.props.user}/>
                         </div>
                     </Grid>
                 </Grid>

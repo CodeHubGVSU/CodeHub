@@ -60,6 +60,12 @@ class App extends Component {
   logout() {
     database.auth().signOut()
     .then(() => {
+      var users = database.database().ref().child("users")
+      users.orderByChild("uid").on("child_added", snapshot => {
+        if( snapshot.val().uid === this.state.user.uid) {
+          database.database().ref("/users/" + snapshot.key + "/loggedIn").set(false)
+        }
+      })
       this.setState({
         authenticated: false,
         user: null
@@ -76,9 +82,16 @@ class App extends Component {
           if (!snapshot.exists()){
             users.push().set({ 
               user: result.user.displayName,
-              uid: result.user.uid
+              uid: result.user.uid, 
+              loggedIn: true
             })
-          }
+          } else {
+              users.orderByChild("uid").on("child_added", snapshot1 => {
+                  if( snapshot1.val().uid === result.user.uid) {
+                    database.database().ref("/users/" + snapshot1.key + "/loggedIn").set(true)
+                  }
+              })
+            }
         })
         this.setState({
             user: result.user,

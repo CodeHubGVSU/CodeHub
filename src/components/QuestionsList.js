@@ -26,7 +26,7 @@ class QuestionsList extends Component {
     state = {
         questions: [],
         comment: "",
-        comments: null
+        comments: []
     }
 
     
@@ -45,7 +45,7 @@ class QuestionsList extends Component {
                     <Card className={classes.card}>
                         <CardHeader action={
                                 <IconButton>
-                                    <DeleteIcon onClick={() => this.deleteQuestion(element.key)}/>
+                                    <DeleteIcon onClick={() => this.deleteQuestion(element)}/>
                                 </IconButton>
                             }
                             title={element.val().title}
@@ -54,6 +54,10 @@ class QuestionsList extends Component {
                             <Typography className={classes.question} color="textPrimary">
                                 {element.val().question}
                             </Typography>
+                            <div>
+                                <h4>Comments</h4>
+                                {this.getComments(element)}
+                            </div>
                         </CardContent>
                         <CardActions>
                             <Popup trigger={<Button size="small" className={classes.commentsButton}>Comment</Button>} 
@@ -62,15 +66,13 @@ class QuestionsList extends Component {
                             >
                             {close => (
                                 <div id="inputs" className="modal">
-                                    <div className={classes.InputHeader}>{element.val().title}</div>
-                                    <div>{this.getComments(element)}</div>
-                                    
+                                    <div className={classes.QuestionTitle}>{element.val().title}</div>
+                                    <div className={classes.Question}>{element.val().question}</div>
                                     <TextField
                                         id="comment"
                                         label="Comment"
                                         multiline
                                         rowsMax="10"
-                                        disabled
                                         value={this.state.comment}
                                         onChange={this.handleChange('comment')}
                                         className={classes.TextField}
@@ -82,6 +84,8 @@ class QuestionsList extends Component {
                                             className="commentButton"
                                             onClick={() => {
                                                 this.addComment(element.key)
+                                                this.setState({comment: ""})
+                                                close()
                                             }}
                                         >
                                             Submit comment
@@ -126,11 +130,45 @@ class QuestionsList extends Component {
             })
         })
 
+        const commentRef = this.props.database.database().ref('comments')
+        var tempComments = []
+        commentRef.orderByChild("key").on("child_added", snapshot => {
+            tempComments.unshift(snapshot)
+        
+            this.setState({
+                comments: tempComments
+            })
+        })
+
+        commentRef.on("child_removed", snapshot => {
+            
+            var tempComments = this.state.comments
+            var index = tempComments.map(function(comment) { return comment.key; }).indexOf(snapshot.key);
+
+            if (index > -1) {
+                tempComments.splice(index, 1);
+            }
+
+            this.setState({
+                comments: tempComments
+            })
+        })
     }
 
-    deleteQuestion(key) {
-        const Ref = this.props.database.database().ref('questions')
-        Ref.child(key).remove()
+    deleteQuestion(element) {
+        if( this.props.user.uid === element.val().uid)
+        {   
+            const Ref = this.props.database.database().ref('questions')
+            Ref.child(element.key).remove()
+        }
+    }
+
+    deleteComment(element) {
+        if( this.props.user.uid === element.val().uid)
+        {
+            const Ref = this.props.database.database().ref('comments')
+            Ref.child(element.key).remove()
+        }
     }
 
     addComment(key) {
@@ -144,33 +182,25 @@ class QuestionsList extends Component {
 
     getComments(element) {
         
-        const Ref = this.props.database.database().ref('comments')
-        var comments = []
-        Ref.orderByChild("key").on("child_added", snapshot => {
-            console.log(snapshot.val())
-            console.log(element.key)            
-            console.log("1")
-            if(snapshot.val().key === element.key)
-                comments.unshift(<div key={snapshot.key}>
-                                    <Typography className="comment" color="textPrimary">
-                                        {snapshot.val().comment}
-                                    </Typography>
-                                 </div>
-                                )
+        var commentList = []
+        for(var i = 0; i < this.state.comments.length; i++) {
+            if(this.state.comments[i].val().key === element.key) {
+                commentList.unshift(this.state.comments[i])
+            }
+        }
+        let commentListProps = commentList.map((comment) => {
+            return (
+                <div key={comment.key}>
+                    <Typography className="comment" color="textPrimary">
+                        <IconButton>
+                            <DeleteIcon onClick={() => this.deleteComment(comment)}/>
+                        </IconButton>
+                        {comment.val().comment}
+                    </Typography>
+                </div>
+            )
         })
-        console.log("2")
-
-        // let commentList = comments.map((comment) => {
-        //     return (
-        //         <div key={comment.key}>
-        //             <Typography className="comment" color="textPrimary">
-        //                 {comment.val().comment}
-        //             </Typography>
-        //         </div>
-        //     )
-        // })
-        
-        return <ul id="listOfCards">{comments}</ul>
+        return <ul id="listOfComments">{commentListProps}</ul>
     }
 
 }

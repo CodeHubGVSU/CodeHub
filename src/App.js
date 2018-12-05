@@ -71,6 +71,15 @@ class App extends Component {
     var provider = new firebase.auth.GoogleAuthProvider()
     database.auth().signInWithPopup(provider)
     .then((result) => {
+        var users = database.database().ref().child("users")
+        users.orderByChild("uid").equalTo(result.user.uid).once("value",snapshot => {
+          if (!snapshot.exists()){
+            users.push().set({ 
+              user: result.user.displayName,
+              uid: result.user.uid
+            })
+          }
+        })
         this.setState({
             user: result.user,
             authenticated: true

@@ -67,6 +67,10 @@ class ForumsTable extends Component {
                                 className="button"
                                 onClick={() => {
                                     this.newPost()
+                                    this.setState({
+                                        question: "",
+                                        title: ""
+                                    })
                                     close()
                                 }}
                                 variant="outlined"

@@ -67,6 +67,10 @@ class ForumsTable extends Component {
                                 className="button"
                                 onClick={() => {
                                     this.newPost()
+                                    this.setState({
+                                        question: "",
+                                        title: ""
+                                    })
                                     close()
                                 }}
                                 variant="outlined"
@@ -79,7 +83,7 @@ class ForumsTable extends Component {
                     </Popup>
                 </div>
                 <div className="Questions">
-                    <QuestionsList database={this.props.database}/>
+                    <QuestionsList database={this.props.database} user={this.props.user}/>
                 </div>
             </div>
         );
